@@ -1,6 +1,14 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>STANZ G</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Rajdhani:wght@500;600;700&display=swap">
+<style>
+/* Black Ops One / Rajdhani — bundled locally (was Google Fonts) so the game's
+   look doesn't depend on a network connection. Latin subset only: every
+   in-game string is English. */
+@font-face{font-family:'Black Ops One'; font-style:normal; font-weight:400; font-display:swap; src:url('vendor/fonts/black-ops-one.woff2') format('woff2');}
+@font-face{font-family:'Rajdhani'; font-style:normal; font-weight:500; font-display:swap; src:url('vendor/fonts/rajdhani-500.woff2') format('woff2');}
+@font-face{font-family:'Rajdhani'; font-style:normal; font-weight:600; font-display:swap; src:url('vendor/fonts/rajdhani-600.woff2') format('woff2');}
+@font-face{font-family:'Rajdhani'; font-style:normal; font-weight:700; font-display:swap; src:url('vendor/fonts/rajdhani-700.woff2') format('woff2');}
+</style>
 <style>
 /* Layout: full-bleed 3D canvas, HUD pinned to screen edges, overlay menus above */
 :root{
@@ -326,7 +334,7 @@ body.touch #ammoBox{bottom:calc(238px + env(safe-area-inset-bottom,0px));}
     </div>
   </div>
 
-  <div class="menu-foot">STANZ G &nbsp;·&nbsp; REFINED BUILD — SQUAD HUD &amp; PORTRAITS &nbsp;·&nbsp; v0.9</div>
+  <div class="menu-foot">STANZ G &nbsp;·&nbsp; FULLY OFFLINE-CAPABLE &nbsp;·&nbsp; v1.0</div>
 </div>
 
 <!-- ================= SETTINGS ================= -->
@@ -503,7 +511,7 @@ body.touch #ammoBox{bottom:calc(238px + env(safe-area-inset-bottom,0px));}
   <button class="tbtn" id="btnPickup" hidden>TAKE</button>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="vendor/three.min.js"></script>
 <script>
 (function(){
 'use strict';

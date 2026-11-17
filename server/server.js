@@ -50,7 +50,8 @@ const MIME = {
   '.css': 'text/css; charset=utf-8',
   '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
   '.ico': 'image/x-icon', '.md': 'text/plain; charset=utf-8',
-  '.json': 'application/json'
+  '.json': 'application/json',
+  '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf'
 };
 const httpServer = http.createServer((req, res) => {
   let url = decodeURIComponent((req.url || '/').split('?')[0]);

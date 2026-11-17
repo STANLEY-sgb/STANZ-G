@@ -7,6 +7,12 @@ drop onto a full island, and real online multiplayer against your friends,
 all running on your phone with no app-store install needed to try it (the
 APK is a separate, optional step if you want it as a proper home-screen app).
 
+**Training Ground, Team Deathmatch, and Battle Royale work with zero
+internet connection, completely** — airplane mode, no Wi-Fi, no data,
+doesn't matter. Everything those three modes need is built into the app
+itself. Only Online Multiplayer needs a connection, because that's the one
+mode where you're playing against real people elsewhere.
+
 ---
 
 ## 1. Installing the game on your phone

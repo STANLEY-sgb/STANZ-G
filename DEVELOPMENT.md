@@ -463,6 +463,48 @@ over: Render's free tier sleeps after 15 minutes idle and takes about a
 minute to wake on the next connection. Not instant from a cold start, but
 zero cost and nothing the user has to keep running.
 
+## True offline capability ✅ COMPLETE (v1.0, 2026-11-17)
+
+The user asked to play solo-vs-AI with zero internet, and surfaced a real
+gap this session hadn't caught: "no server needed" (true since Stage 1 —
+Training/TDM/BR never talked to a server) was not the same claim as "works
+with literally no internet connection," and it wasn't actually true. The
+page's two external dependencies — the Three.js engine, loaded from the
+cdnjs CDN, and the Black Ops One/Rajdhani fonts, loaded from Google Fonts
+— meant the app could not even finish loading without a network
+connection, let alone play. Without Three.js specifically, nothing in the
+game can render at all; this was a hard functional blocker for every mode,
+not a cosmetic gap, and had been present since Stage 1 without anyone
+hitting it until the user explicitly asked for guaranteed offline play.
+
+Fixed by bundling both inside the app itself (`www/vendor/`) instead of
+fetching them at load time:
+- **Three.js r128** (603,445 bytes) — downloaded once, then its integrity
+  verified two independent ways before trusting it: run through Node's own
+  parser to confirm it's intact, valid JS, and separately fetched the same
+  pinned version from a second, unrelated CDN (jsdelivr) and confirmed the
+  two files are SHA-256 identical, byte for byte.
+- **The four actual font files used** (Black Ops One 400, Rajdhani
+  500/600/700 — the Latin subset only, since every in-game string is
+  English; skipped the Cyrillic/Vietnamese/Devanagari variants Google
+  Fonts also serves) — each verified by its WOFF2 magic bytes before
+  being trusted, replacing the Google Fonts `<link>` with local
+  `@font-face` rules pointing at them.
+- `server/server.js`'s MIME map extended with `.woff2`/`.woff`/`.ttf` so
+  the browser-playable and Render-hosted paths serve these correctly too
+  (the installed APK doesn't need this — Capacitor's WebView infers MIME
+  types from bundled assets on its own).
+
+Verified, not assumed: after the change, grepped the entire page for every
+remaining `http://`/`https://` reference and confirmed the only two hits
+left are inside help text a human reads, not anything the browser loads;
+ran the actual local server and `curl`-fetched every bundled file to
+confirm correct size and `Content-Type`; re-ran the full 11-check
+multiplayer integration suite to confirm nothing else broke; and opened
+the rebuilt APK directly to confirm all five bundled files are inside it,
+the Three.js copy inside is byte-identical to the verified original, and
+zero `cdnjs`/`googleapis` references remain in the HTML it actually ships.
+
 ---
 
 ## Asset inventory (all original, generated in code — no external assets)
@@ -477,4 +519,8 @@ zero cost and nothing the user has to keep running.
   (Stage 5, `ENV`/`updateDayNight`/`updateWeather` in index.html) — no textures
 - Audio: WebAudio-synthesized (noise-based wind/footsteps/thunder, oscillator
   thud, generative ambient+combat music pad — all code, no audio files)
-- Fonts: Black Ops One (display), Rajdhani (UI) via Google Fonts
+- Fonts: Black Ops One (display), Rajdhani (UI) — originally Google Fonts,
+  bundled locally as of v1.0 (`www/vendor/fonts/`) for offline play
+- Engine: Three.js r128, bundled locally as of v1.0 (`www/vendor/three.min.js`)
+  — was loaded from a CDN before, which meant the app couldn't load at all
+  offline
