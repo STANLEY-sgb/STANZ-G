@@ -1,0 +1,11 @@
+{
+  "appId": "com.stanzg.game",
+  "appName": "STANZ G",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": true
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

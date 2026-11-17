@@ -1,0 +1,20 @@
+{
+  "name": "stanz-g",
+  "version": "0.9.0",
+  "private": true,
+  "description": "STANZ G — tactical survival shooter. Capacitor project wrapping the www/ web build as a native Android app.",
+  "scripts": {
+    "sync": "cap copy android && cap update android",
+    "open:android": "cap open android",
+    "build:debug": "cd android && ./gradlew assembleDebug",
+    "build:release": "cd android && ./gradlew bundleRelease",
+    "icons": "python tools/gen-icons.py"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/core": "^8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.2"
+  }
+}

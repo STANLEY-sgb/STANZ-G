@@ -1,0 +1,13 @@
+{
+  "name": "stanz-g-server",
+  "version": "0.6.1",
+  "private": true,
+  "description": "STANZ G — authoritative online multiplayer server (Stage 4)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
