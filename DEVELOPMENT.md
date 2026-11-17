@@ -412,6 +412,42 @@ Re-verified after every change in this pass: full script still parses via
 Node, 0 missing DOM ids, and the 11-check online-multiplayer integration
 suite still passes 11/11 against the updated server.
 
+## Cloud hosting for Online Multiplayer ⏳ IN PROGRESS — waiting on account setup
+
+The user chose real cloud hosting over same-Wi-Fi-only (see v0.9.1 above),
+so the server stays reachable without anyone's PC needing to stay on. This
+needs an account on a hosting provider — that's a decision/action only the
+project owner can make, so this stage is prepared but deliberately paused
+there rather than assumed.
+
+**Chosen provider: Render.com** — confirmed via live research (not assumed
+from training data) that as of a Feb 2026 platform change, Render's free
+web services support WebSocket connections and no longer require a credit
+card to sign up. Honest limitation: a free service sleeps after 15 minutes
+with no traffic and takes about a minute to wake on the next connection —
+fine for a scheduled match, not "always instantly on."
+
+Done:
+- `git init` + first commit (71 files) — the project had no version control
+  before this. `.gitignore` extended to also exclude Claude Code's own
+  session files (`.claude/`), on top of the existing exclusion of the
+  unlicensed reference photos.
+- `render.yaml` — a Render Blueprint that deploys `server/` as a free Node
+  web service with one connected click once the repo is on GitHub; no
+  manual dashboard configuration needed. Validated as well-formed YAML
+  (parsed and round-tripped, not just eyeballed).
+- Confirmed `server/server.js` already needs no changes to run on Render:
+  it already reads `process.env.PORT` (Render injects this) and binds to
+  all interfaces by default.
+
+Still needed (from the project owner, not something Claude can do on their
+behalf): create a GitHub account if they don't have one and push/upload
+this repo to it, then create a Render account and deploy via Blueprint.
+Once that produces a real public address, the next step is to bake that
+address into `defaultServerUrl()` in `www/index.html` as the online-mode
+default (removing the manual address-entry step entirely for players) and
+rebuild the APK once more.
+
 ---
 
 ## Asset inventory (all original, generated in code — no external assets)
