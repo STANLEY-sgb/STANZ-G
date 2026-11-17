@@ -1,0 +1,19 @@
+# Render.com Blueprint — deploys the STANZ G online-multiplayer server
+# (server/server.js) as a free, always-reachable web service.
+#
+# How to use this file: push this repo to GitHub, then on Render.com choose
+# "New +" -> "Blueprint" and point it at the repo. Render reads this file
+# automatically and sets everything up — no manual configuration needed.
+# Full walkthrough: see HOW_TO_PLAY.md / DEVELOPMENT.md.
+services:
+  - type: web
+    name: stanz-g-server
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
