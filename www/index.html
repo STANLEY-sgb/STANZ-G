@@ -304,9 +304,9 @@ body.touch #ammoBox{bottom:calc(238px + env(safe-area-inset-bottom,0px));}
     <button class="mode" id="onlineBtn">
       <div>
         <div class="m-name">ONLINE MULTIPLAYER</div>
-        <div class="m-sub">Real players, not AI — needs someone to host a server first</div>
+        <div class="m-sub">Real players, not AI — connects automatically</div>
       </div>
-      <span class="m-tag">NEEDS A HOST</span>
+      <span class="m-tag ok">AUTO-CONNECT</span>
     </button>
   </div>
 
@@ -387,18 +387,17 @@ body.touch #ammoBox{bottom:calc(238px + env(safe-area-inset-bottom,0px));}
   <div class="panel">
     <h2>ONLINE MULTIPLAYER</h2>
     <div class="net-intro">
-      This is the only mode that needs anything set up — it's how you play
-      against real friends instead of AI. Someone has to be hosting a match
-      right now for this to work. <b>Not playing with others right now?</b>
-      Tap Cancel and pick Training, Team Deathmatch, or Battle Royale instead
-      — those start instantly, no setup at all.
+      Connecting you to the official STANZ G server automatically — no setup
+      needed. You're about to play against real people, not AI.
+      <b>Not playing with others right now?</b> Tap Cancel and pick Training,
+      Team Deathmatch, or Battle Royale instead — those start instantly too.
     </div>
     <div class="set-row">
       <label for="nameInput">Your name <span class="opt">(optional)</span></label>
       <input type="text" id="nameInput" maxlength="14" autocomplete="off" placeholder="OPERATOR">
     </div>
     <div class="set-row">
-      <label for="serverInput">Server address</label>
+      <label for="serverInput">Server <span class="opt">(only change this to join a friend's LAN game instead)</span></label>
       <input type="text" id="serverInput" autocomplete="off" placeholder="ask whoever is hosting">
     </div>
     <div id="netStatus"></div>
@@ -2723,13 +2722,16 @@ function setupBR(){
 var NET = {ws:null, id:0, team:'stanz', room:0, remotes:{}, connected:false,
            sendT:0, spawn:[0,0,-8]};
 
+// A real, permanently-hosted server (see DEVELOPMENT.md) — verified live and
+// reachable over the open internet. This is the zero-setup path: players never
+// have to type an address at all unless they deliberately want a different
+// (e.g. same-Wi-Fi LAN) server instead.
+var CLOUD_SERVER_URL = 'wss://stanz-g.onrender.com';
 function defaultServerUrl(){
-  // only trust this when the page itself was served by the game's own server (a
-  // browser visiting that address directly) — inside the installed app there is
-  // no way to know the host PC's address, so leave it blank rather than guess
-  // 'localhost', which would just point the phone at itself and silently fail.
+  // prefer same-origin when the page itself was served by a game server (a
+  // browser visiting that address directly) — that's definitely reachable.
   if(location.protocol==='http:' && location.host) return 'ws://'+location.host;
-  return '';
+  return CLOUD_SERVER_URL;
 }
 function netStatus(txt, err){
   var el = $('netStatus');
@@ -2937,11 +2939,30 @@ function setupOnline(){
 }
 
 // --- online UI wiring ---
+function doConnect(name, url){
+  if(!/^wss?:\/\/.+/.test(url)){ netStatus('ADDRESS MUST START WITH ws:// OR wss://', true); return; }
+  settings.playerName = name;
+  settings.serverUrl = url;
+  saveSettings();
+  initAudio();
+  if(AC && AC.state==='suspended') AC.resume();
+  netConnect(url, name);
+}
 $('onlineBtn').addEventListener('click', function(){
+  var name = settings.playerName || 'OPERATOR';
+  var url = settings.serverUrl || defaultServerUrl();
   $('nameInput').value = settings.playerName || '';
-  $('serverInput').value = settings.serverUrl || defaultServerUrl();
-  netStatus('');
+  $('serverInput').value = url;
   $('onlineOverlay').hidden = false;
+  // a known-good address always exists now (the hosted cloud server, unless the
+  // player previously typed their own) — connect straight away, no typing
+  // needed; the overlay stays visible just to show status and offer Cancel.
+  if(url){
+    netStatus('CONNECTING…');
+    doConnect(name, url);
+  } else {
+    netStatus('');
+  }
 });
 $('onlineCancel').addEventListener('click', function(){
   if(!NET.connected) netLeave();
@@ -2950,13 +2971,7 @@ $('onlineCancel').addEventListener('click', function(){
 $('connectBtn').addEventListener('click', function(){
   var name = $('nameInput').value.trim() || 'OPERATOR';
   var url = $('serverInput').value.trim();
-  if(!/^wss?:\/\/.+/.test(url)){ netStatus('ADDRESS MUST START WITH ws:// OR wss://', true); return; }
-  settings.playerName = name;
-  settings.serverUrl = url;
-  saveSettings();
-  initAudio();
-  if(AC && AC.state==='suspended') AC.resume();
-  netConnect(url, name);
+  doConnect(name, url);
 });
 
 // ============================================================

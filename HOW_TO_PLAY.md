@@ -29,16 +29,16 @@ directly like this.
 That's it — no account, no sign-up, no download inside the app.
 
 > **Important — read this before you tap anything in the menu:**
-> Three of the four modes need absolutely nothing else from you. Tap
-> **TRAINING GROUND**, **TEAM DEATHMATCH**, or **BATTLE ROYALE** and you are
-> playing within a second or two — no address, no name, no server, nothing
-> to set up. They're all marked **NO SETUP** on their button.
->
-> Only **ONLINE MULTIPLAYER** (marked **NEEDS A HOST**) asks for anything,
-> because that's the one mode where you're playing against real people
-> instead of AI — see section 4 below. If you weren't trying to play with
-> friends right now, you tapped the wrong button: go back and pick one of
-> the other three.
+> All four modes play with just a tap — nothing to set up anywhere. Tap
+> **TRAINING GROUND**, **TEAM DEATHMATCH**, or **BATTLE ROYALE** (all marked
+> **NO SETUP**) and you're playing solo against AI within a second or two.
+> Tap **ONLINE MULTIPLAYER** (marked **AUTO-CONNECT**) and it connects you
+> to the official STANZ G server by itself — no address, no typing, just a
+> short "connecting…" moment — and drops you into a live match against
+> whoever else is on there. See section 4 for the one honest caveat (the
+> free server can take about a minute to wake up if nobody's played in a
+> while) and how to host your own instead if you'd rather play just with
+> people in the same room.
 
 ---
 
@@ -98,46 +98,44 @@ your friends.
 
 ---
 
-## 4. Playing Online Multiplayer with friends
+## 4. Playing Online Multiplayer
 
-This mode needs one person to **host** a small server — it's a program that
-runs on a laptop or PC and lets everyone's phones talk to each other over
-the same Wi-Fi network. It only takes one person to do this, and it's free.
+**The normal way — nothing to set up:** tap **ONLINE MULTIPLAYER**. The app
+connects itself to the official STANZ G server (hosted in the cloud, always
+there) and drops you into a live match — no address, no name required, no
+one needs to host anything. You'll be auto-balanced onto a team (STANZ or
+RAVEN) and play by the same first-to-25 rules as Team Deathmatch, except
+every other soldier you see is a real person, not AI.
 
-**If you're hosting (Windows, easiest way):**
-1. In the STANZ G project folder, open the `server` folder and
-   double-click **`start-server.bat`**. That's it — no typing. The first
-   time, it'll quietly install what it needs (needs Node.js already
-   installed on that PC); every time after that it starts instantly.
-2. A black window opens and prints an address for every player, already
-   worked out for you, like:
+**One honest thing to know:** that server is on a free hosting plan, which
+falls asleep after 15 minutes with nobody on it and takes about a minute to
+wake back up the moment someone connects. If "Connecting…" sits there for a
+bit the very first time someone plays in a while, that's expected — give it
+a minute, it'll come through. Once people are playing, it stays awake.
+
+**Playing just with people in the same room instead?** You can skip the
+cloud server entirely and host your own over Wi-Fi — lower latency, and
+works with no internet at all:
+1. One person: in the STANZ G project folder, open the `server` folder and
+   double-click **`start-server.bat`** (Windows — no typing needed; first
+   run installs what it needs, needs Node.js already on that PC). A window
+   opens and prints an address for everyone else, like:
    ```
    Give THIS to everyone else on your Wi-Fi:
       192.168.1.23:8080
    They type it into ONLINE MULTIPLAYER as:
       ws://192.168.1.23:8080
    ```
-3. Keep that window open for as long as you want the match to run — closing
-   it ends the match for everyone.
+   *(Mac/Linux: `cd server`, `npm install` once, then `node server.js`.)*
+2. Everyone else, on the **same Wi-Fi**: tap **ONLINE MULTIPLAYER**, then
+   before it finishes connecting, edit the **Server** field to the
+   `ws://...` address the host's window printed, and tap **Connect**.
+3. Keep the host's window open for as long as the match runs.
 
-*(Mac/Linux, or prefer a terminal: `cd server`, `npm install` the first
-time only, then `node server.js` — same printed address either way.)*
-
-**Everyone else (including the host, on their own phone):**
-1. Make sure you're on the **same Wi-Fi network** as the host's computer.
-2. Open STANZ G, tap **ONLINE MULTIPLAYER**.
-3. Your name is optional — leave it blank if you want. For the server
-   address, type exactly the `ws://...` line the host's window printed.
-4. Tap **Connect**.
-
-You'll be auto-balanced onto a team (STANZ or RAVEN) and dropped straight
-into a live match — same first-to-25 rules as Team Deathmatch, except every
-other soldier you see is a real friend, not AI.
-
-**If it won't connect:** double-check everyone's on the same Wi-Fi (not one
-person on mobile data), double-check the address was typed exactly as shown
-(including `ws://`, not `http://` or `wss://`), and check the host's
-computer firewall isn't blocking the port.
+**If it won't connect:** for the LAN option, double-check everyone's on the
+same Wi-Fi (not one person on mobile data) and the address was typed
+exactly as shown; for the cloud server, just try again after a minute in
+case it was asleep.
 
 ---
 

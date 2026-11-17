@@ -412,41 +412,56 @@ Re-verified after every change in this pass: full script still parses via
 Node, 0 missing DOM ids, and the 11-check online-multiplayer integration
 suite still passes 11/11 against the updated server.
 
-## Cloud hosting for Online Multiplayer ⏳ IN PROGRESS — waiting on account setup
+## Cloud hosting for Online Multiplayer ✅ COMPLETE (v0.9.2, 2026-11-17)
 
 The user chose real cloud hosting over same-Wi-Fi-only (see v0.9.1 above),
-so the server stays reachable without anyone's PC needing to stay on. This
-needs an account on a hosting provider — that's a decision/action only the
-project owner can make, so this stage is prepared but deliberately paused
-there rather than assumed.
+so the server stays reachable without anyone's PC needing to stay on, and
+chose to go through with the account-creation step this needed (Render.com,
+confirmed free/no-card — see the paused entry this replaces for that
+research). The project now has a real, permanently-hosted multiplayer
+server, live and verified:
 
-**Chosen provider: Render.com** — confirmed via live research (not assumed
-from training data) that as of a Feb 2026 platform change, Render's free
-web services support WebSocket connections and no longer require a credit
-card to sign up. Honest limitation: a free service sleeps after 15 minutes
-with no traffic and takes about a minute to wake on the next connection —
-fine for a scheduled match, not "always instantly on."
+- `git init` + first commit, pushed to the user's own repo at
+  **github.com/STANLEY-sgb/STANZ-G**. Push itself needed no new credential
+  entry — this PC already had a stored GitHub login via Git Credential
+  Manager. Verified landed correctly via GitHub's own API (not just a
+  clean local `git push` message), and separately confirmed no secrets,
+  no Claude-internal files, and none of the unlicensed reference photos
+  made it into the commit.
+- **Real deploy failure, found and fixed from the actual error log, not
+  guessed:** Render ran the service as a plain Web Service against the
+  repo root, ignoring `render.yaml`'s `rootDir`/`buildCommand`/
+  `startCommand` entirely, and fell back to its own generic `yarn` /
+  `yarn start` — which failed because the root `package.json` had no
+  `start` script and the server's `ws` dependency was never installed
+  there. Fixed by making the repo root self-sufficient instead of
+  re-doing the Render setup: added `"start": "node server/server.js"`
+  and `ws` as a root dependency. Verified by running the *exact* command
+  Render executes (`PORT=8201 npm start`, from the repo root) on this
+  machine before declaring it fixed, confirming `HTTP 200` and the full
+  multiplayer protocol.
+- **Live server confirmed working over the real internet** at
+  `https://stanz-g.onrender.com` — checked both that it serves the actual
+  game page (not a placeholder) and, separately, that a real WebSocket
+  client can complete the full `hello` → `welcome` handshake against it
+  and get assigned a room and team, exactly as the local integration
+  tests already proved against localhost.
+- **Wired into the app as the real default**: `defaultServerUrl()` now
+  returns this address, and tapping **ONLINE MULTIPLAYER** connects to it
+  immediately — no address, no name, no typing. The connect screen still
+  exists and is still reachable (now described as "only change this to
+  join a friend's LAN game instead"), so same-Wi-Fi hosting via
+  `start-server.bat` remains available as a lower-latency, no-internet-
+  needed alternative. Main menu card updated to **AUTO-CONNECT** from
+  **NEEDS A HOST**.
+- `HOW_TO_PLAY.md` rewritten again: all four modes are now "tap and play,"
+  with the free server's cold-start wake-up disclosed honestly rather than
+  hidden.
 
-Done:
-- `git init` + first commit (71 files) — the project had no version control
-  before this. `.gitignore` extended to also exclude Claude Code's own
-  session files (`.claude/`), on top of the existing exclusion of the
-  unlicensed reference photos.
-- `render.yaml` — a Render Blueprint that deploys `server/` as a free Node
-  web service with one connected click once the repo is on GitHub; no
-  manual dashboard configuration needed. Validated as well-formed YAML
-  (parsed and round-tripped, not just eyeballed).
-- Confirmed `server/server.js` already needs no changes to run on Render:
-  it already reads `process.env.PORT` (Render injects this) and binds to
-  all interfaces by default.
-
-Still needed (from the project owner, not something Claude can do on their
-behalf): create a GitHub account if they don't have one and push/upload
-this repo to it, then create a Render account and deploy via Blueprint.
-Once that produces a real public address, the next step is to bake that
-address into `defaultServerUrl()` in `www/index.html` as the online-mode
-default (removing the manual address-entry step entirely for players) and
-rebuild the APK once more.
+Honest limitation that remains, disclosed to the user rather than glossed
+over: Render's free tier sleeps after 15 minutes idle and takes about a
+minute to wake on the next connection. Not instant from a cold start, but
+zero cost and nothing the user has to keep running.
 
 ---
 
